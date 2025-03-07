@@ -6,6 +6,8 @@
 
 <img src="/resources/ICT Macros.png">
 
+<i align="center"> The script received 5112 likes on TradingView <img src="/resources/Likes Macros.png"> </i>
+
 <p align="center">
   <i align="center">P.S. I know the script was not published under my name, but I wrote it 😉</i>
 </p>
