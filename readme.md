@@ -4,7 +4,7 @@
     </a>
 </h1>
 
-<img src="/resources/ICT Macros.png">
+<img src="/resources/ICT_Macros_cover.png">
 
 <p align="center">
   <i align="center">P.S. I know the script was not published under my name, but I wrote it 😉</i>
