@@ -42,3 +42,4 @@ Flexible line and text settings
 <br>Macro background color settings
 <br>The indicator shows the end of the macro immediately
 
+**To see the script in action, follow <a href="https://ru.tradingview.com/script/qIzr54lv-ICT-Macros-by-Cryptofor/">click here</a>**
