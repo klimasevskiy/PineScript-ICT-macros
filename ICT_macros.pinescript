@@ -1,0 +1,345 @@
+//@version=5
+indicator('ICT Macros', overlay=true, max_lines_count=500, max_boxes_count=500)
+
+//===========================
+//||        Settings       ||
+//===========================
+
+//------Line Settings------
+LineColor = input.color(title="Line Color", defval=color.rgb(0, 0, 0, 50), group = "General settings")
+LineStyle = input.string(title="Line Style", defval = "dotted", options=["solid", "dotted", "dashed"], group = "General settings")
+LineWidth = input.int(title="Line Width", defval = 1, minval = 1, step = 1, maxval = 20, group = "General settings")
+
+//------Text Settings-------
+TextColor = input.color(title="Text Color", defval=color.rgb(0, 0, 0, 50), group = "General settings")
+TextSize = input.string(title="Text Size", defval = "small", options=["auto", "tiny", "small", "normal", "large", "huge"], group = "General settings")
+
+// Session options
+isShowToday = input.bool(true, title="Show data only for the last 24 hours", group="Session Options", tooltip="Hide Historical Sessions")
+//-------London Macros------
+isLondon = input.bool(title='Show London Macros', group='London options', defval=true, tooltip='Shows London Macros\n02:33-03:00\n04:03-04:30')
+loBgColor = input.color(title='London background color', group='London options', defval=color.rgb(209, 212, 220, 95))
+
+//---------NY AM--------
+isNYAM = input.bool(title='Show New York Am Macros', group='New York Am Macros options', defval=true, tooltip='Shows New York Am Macros\n08:50-09:10\n09:50-10:10\n10:50-11:10')
+NYAMBgColor = input.color(title='NY Am background color', group='New York Am Macros options', defval=color.rgb(209, 212, 220, 95))
+
+//-----NY Lunch + PM----
+isNYLPM = input.bool(title='Show New York Lunch + Pm Macros', group='New York Lunch + Pm options', defval=true, tooltip='Shows New York Lunch + Pm Macros\n11:50-12:10\n13:10-13:40\n15:15-15:45')
+NYLPMBgColor = input.color(title='NY Lunch + Pm background color', group='New York Lunch + Pm options', defval=color.rgb(209, 212, 220, 95))
+
+//===========================
+//||        Time           ||
+//===========================
+
+// True time in EST New York Time(also 1s to 1m timeframes)
+_2_33 = timestamp('UTC-4', year, month, dayofmonth, 2, 33, 00)
+_3 = timestamp('UTC-4', year, month, dayofmonth, 3, 0, 00)
+_4_03 = timestamp('UTC-4', year, month, dayofmonth, 4, 3, 00)
+_4_30 = timestamp('UTC-4', year, month, dayofmonth, 4, 30, 00)
+_8_50 = timestamp('UTC-4', year, month, dayofmonth, 8, 50, 00)
+_9_10 = timestamp('UTC-4', year, month, dayofmonth, 9, 10, 00)
+_9_50 = timestamp('UTC-4', year, month, dayofmonth, 9, 50, 00)
+_10_10 = timestamp('UTC-4', year, month, dayofmonth, 10, 10, 00)
+_10_50 = timestamp('UTC-4', year, month, dayofmonth, 10, 50, 00)
+_11_10 = timestamp('UTC-4', year, month, dayofmonth, 11, 10, 00)
+_11_50 = timestamp('UTC-4', year, month, dayofmonth, 11, 50, 00)
+_12_10 = timestamp('UTC-4', year, month, dayofmonth, 12, 10, 00)
+_13_10 = timestamp('UTC-4', year, month, dayofmonth, 13, 10, 00)
+_13_40 = timestamp('UTC-4', year, month, dayofmonth, 13, 40, 00)
+_15_15 = timestamp('UTC-4', year, month, dayofmonth, 15, 15, 00)
+_15_45 = timestamp('UTC-4', year, month, dayofmonth, 15, 45, 00)
+
+// Approximate time in different timeframes
+//---------3m----------
+if timeframe.period == "3"
+    _2_33 := timestamp('UTC-4', year, month, dayofmonth, 2, 33, 00)
+    _3 := timestamp('UTC-4', year, month, dayofmonth, 3, 0, 00)
+    _4_03 := timestamp('UTC-4', year, month, dayofmonth, 4, 3, 00)
+    _4_30 := timestamp('UTC-4', year, month, dayofmonth, 4, 30, 00)
+    _8_50 := timestamp('UTC-4', year, month, dayofmonth, 8, 51, 00)
+    _9_10 := timestamp('UTC-4', year, month, dayofmonth, 9, 09, 00)
+    _9_50 := timestamp('UTC-4', year, month, dayofmonth, 9, 51, 00)
+    _10_10 := timestamp('UTC-4', year, month, dayofmonth, 10, 09, 00)
+    _10_50 := timestamp('UTC-4', year, month, dayofmonth, 10, 51, 00)
+    _11_10 := timestamp('UTC-4', year, month, dayofmonth, 11, 09, 00)
+    _11_50 := timestamp('UTC-4', year, month, dayofmonth, 11, 51, 00)
+    _12_10 := timestamp('UTC-4', year, month, dayofmonth, 12, 09, 00)
+    _13_10 := timestamp('UTC-4', year, month, dayofmonth, 13, 09, 00)
+    _13_40 := timestamp('UTC-4', year, month, dayofmonth, 13, 42, 00)
+    _15_15 := timestamp('UTC-4', year, month, dayofmonth, 15, 15, 00)
+    _15_45 := timestamp('UTC-4', year, month, dayofmonth, 15, 45, 00)
+
+//---------5m----------
+if timeframe.period == "5"
+    _2_33 := timestamp('UTC-4', year, month, dayofmonth, 2, 30, 00)
+    _3 := timestamp('UTC-4', year, month, dayofmonth, 3, 0, 00)
+    _4_03 := timestamp('UTC-4', year, month, dayofmonth, 4, 0, 00)
+    _4_30 := timestamp('UTC-4', year, month, dayofmonth, 4, 30, 00)
+    _8_50 := timestamp('UTC-4', year, month, dayofmonth, 8, 50, 00)
+    _9_10 := timestamp('UTC-4', year, month, dayofmonth, 9, 10, 00)
+    _9_50 := timestamp('UTC-4', year, month, dayofmonth, 9, 50, 00)
+    _10_10 := timestamp('UTC-4', year, month, dayofmonth, 10, 10, 00)
+    _10_50 := timestamp('UTC-4', year, month, dayofmonth, 10, 50, 00)
+    _11_10 := timestamp('UTC-4', year, month, dayofmonth, 11, 10, 00)
+    _11_50 := timestamp('UTC-4', year, month, dayofmonth, 11, 50, 00)
+    _12_10 := timestamp('UTC-4', year, month, dayofmonth, 12, 10, 00)
+    _13_10 := timestamp('UTC-4', year, month, dayofmonth, 13, 10, 00)
+    _13_40 := timestamp('UTC-4', year, month, dayofmonth, 13, 40, 00)
+    _15_15 := timestamp('UTC-4', year, month, dayofmonth, 15, 15, 00)
+    _15_45 := timestamp('UTC-4', year, month, dayofmonth, 15, 45, 00)
+
+//---------15m----------
+if timeframe.period == "15"
+    _2_33 := timestamp('UTC-4', year, month, dayofmonth, 2, 30, 00)
+    _3 := timestamp('UTC-4', year, month, dayofmonth, 3, 0, 00)
+    _4_03 := timestamp('UTC-4', year, month, dayofmonth, 4, 0, 00)
+    _4_30 := timestamp('UTC-4', year, month, dayofmonth, 4, 30, 00)
+    _8_50 := timestamp('UTC-4', year, month, dayofmonth, 8, 45, 00)
+    _9_10 := timestamp('UTC-4', year, month, dayofmonth, 9, 15, 00)
+    _9_50 := timestamp('UTC-4', year, month, dayofmonth, 9, 45, 00)
+    _10_10 := timestamp('UTC-4', year, month, dayofmonth, 10, 15, 00)
+    _10_50 := timestamp('UTC-4', year, month, dayofmonth, 10, 45, 00)
+    _11_10 := timestamp('UTC-4', year, month, dayofmonth, 11, 15, 00)
+    _11_50 := timestamp('UTC-4', year, month, dayofmonth, 11, 45, 00)
+    _12_10 := timestamp('UTC-4', year, month, dayofmonth, 12, 15, 00)
+    _13_10 := timestamp('UTC-4', year, month, dayofmonth, 13, 15, 00)
+    _13_40 := timestamp('UTC-4', year, month, dayofmonth, 13, 45, 00)
+    _15_15 := timestamp('UTC-4', year, month, dayofmonth, 15, 15, 00)
+    _15_45 := timestamp('UTC-4', year, month, dayofmonth, 15, 45, 00)
+
+//---------30m----------
+if timeframe.period == "30"
+    _2_33 := timestamp('UTC-4', year, month, dayofmonth, 2, 30, 00)
+    _3 := timestamp('UTC-4', year, month, dayofmonth, 3, 0, 00)
+    _4_03 := timestamp('UTC-4', year, month, dayofmonth, 4, 0, 00)
+    _4_30 := timestamp('UTC-4', year, month, dayofmonth, 4, 30, 00)
+    _8_50 := timestamp('UTC-4', year, month, dayofmonth, 9, 0, 00)
+    _9_10 := timestamp('UTC-4', year, month, dayofmonth, 9, 0, 00)
+    _9_50 := timestamp('UTC-4', year, month, dayofmonth, 10, 0, 00)
+    _10_10 := timestamp('UTC-4', year, month, dayofmonth, 10, 0, 00)
+    _10_50 := timestamp('UTC-4', year, month, dayofmonth, 10, 30, 00)
+    _11_10 := timestamp('UTC-4', year, month, dayofmonth, 11, 0, 00)
+    _11_50 := timestamp('UTC-4', year, month, dayofmonth, 12, 0, 00)
+    _12_10 := timestamp('UTC-4', year, month, dayofmonth, 12, 0, 00)
+    _13_10 := timestamp('UTC-4', year, month, dayofmonth, 13, 0, 00)
+    _13_40 := timestamp('UTC-4', year, month, dayofmonth, 13, 30, 00)
+    _15_15 := timestamp('UTC-4', year, month, dayofmonth, 15, 0, 00)
+    _15_45 := timestamp('UTC-4', year, month, dayofmonth, 15, 30, 00)
+
+//===========================
+//||       Offsets          ||
+//===========================
+
+// ---------1m----------
+londonOffs = 27
+nyamOffs = 20
+nylpmFirstOffs = 20
+nylpmSecondOffs = 30
+
+// ---------1s----------
+if timeframe.period == "S"
+    londonOffs := 1620
+    nyamOffs := 1200
+    nylpmFirstOffs := 1200
+    nylpmSecondOffs := 1800
+
+// ---------5s----------
+if timeframe.period == "5S"
+    londonOffs := 324
+    nyamOffs := 240
+    nylpmFirstOffs := 240
+    nylpmSecondOffs := 360
+
+// ---------15s----------
+if timeframe.period == "15S"
+    londonOffs := 108
+    nyamOffs := 80
+    nylpmFirstOffs := 80
+    nylpmSecondOffs := 120
+
+// ---------30s----------
+if timeframe.period == "30S"
+    londonOffs := 54
+    nyamOffs := 40
+    nylpmFirstOffs := 40
+    nylpmSecondOffs := 60
+
+//---------3m----------
+if timeframe.period == "3"
+    londonOffs := 9
+    nyamOffs := 6
+    nylpmFirstOffs := 6
+    nylpmSecondOffs := 11
+
+//---------5m----------
+if timeframe.period == "5"
+    londonOffs := 6
+    nyamOffs := 4
+    nylpmFirstOffs := 4
+    nylpmSecondOffs := 6
+
+//---------15m----------
+if timeframe.period == "15"
+    londonOffs := 2
+    nyamOffs := 2
+    nylpmFirstOffs := 2
+    nylpmSecondOffs := 2
+
+//---------30m----------
+if timeframe.period == "30"
+    londonOffs := 1
+    nyamOffs := 1
+    nylpmFirstOffs := 1
+    nylpmSecondOffs := 1
+
+// Define settings
+//------Line Style-------
+lstyle = line.style_dashed
+if LineStyle == "dashed"
+    lstyle := line.style_dashed
+if LineStyle == "solid"
+    lstyle := line.style_solid
+if LineStyle == "dotted"
+    lstyle := line.style_dotted
+
+//------Text Size-------
+txtsize = size.small
+if TextSize == "auto"
+    txtsize := size.auto
+if TextSize == "tiny"
+    txtsize := size.tiny
+if TextSize == "small"
+    txtsize := size.small
+if TextSize == "normal"
+    txtsize := size.normal
+if TextSize == "large"
+    txtsize := size.large
+if TextSize == "huge"
+    txtsize := size.huge
+
+isToday = false
+if isShowToday == true
+    if year(timenow) == year(time) and month(timenow) == month(time) and dayofmonth(time)>dayofmonth(timenow)-2
+        isToday := true
+
+// Macros line
+verticalLine(Color, pos) =>
+    line.new(pos, low - ta.tr, pos, high + ta.tr, xloc.bar_index, extend.both, Color, lstyle, LineWidth)
+// Macros name
+verticalLabel(Color, start, stop, Text) =>
+    box.new(start, high+ta.tr+ta.tr+ta.tr+ta.tr, stop, bottom = high+0.002, bgcolor = color.rgb(255, 255, 255, 100), text = Text, text_color = Color, border_color = color.rgb(255, 255, 255, 100), text_size = txtsize)
+// Macros fill
+fill(start, stop, bg) =>
+    linefill.new(start, stop, bg)
+
+// Define temp variables
+// Fill start and end
+var start_line = verticalLine(LineColor, bar_index)
+var stop_line = verticalLine(LineColor, bar_index)
+
+// TextBox start and end
+var text_start = bar_index
+var text_end = bar_index
+
+// Plot vertical lines and their labels
+//All sessions
+if isShowToday==false
+//london
+    if time == _2_33 or time == _4_03
+        verticalLine(LineColor, bar_index)
+        start_line := verticalLine(LineColor, bar_index)
+        text_start := bar_index
+        verticalLine(LineColor, bar_index+londonOffs)
+        stop_line := verticalLine(LineColor, bar_index+londonOffs)
+        text_end := bar_index+londonOffs
+        fill(start_line, stop_line, loBgColor)
+        verticalLabel(TextColor, text_start, text_end, "LONDON MACROS")
+
+//NEW YORK AM
+    if isNYAM == true
+        if time == _8_50 or time == _9_50 or time == _10_50
+            verticalLine(LineColor, bar_index)
+            start_line := verticalLine(LineColor, bar_index)
+            text_start := bar_index
+            
+            verticalLine(LineColor, bar_index+nyamOffs)
+            stop_line := verticalLine(LineColor, bar_index+nyamOffs)
+            text_end := bar_index+nyamOffs
+            fill(start_line, stop_line, NYAMBgColor)
+            verticalLabel(TextColor, text_start, text_end, "NEW YORK\nAM MACROS")
+
+    //NEW YORK LUNCH + PM
+    if isNYLPM == true
+        if time == _11_50
+            verticalLine(LineColor, bar_index)
+            start_line := verticalLine(LineColor, bar_index)
+            text_start := bar_index
+
+            verticalLine(LineColor, bar_index+nylpmFirstOffs)
+            stop_line := verticalLine(LineColor, bar_index+nylpmFirstOffs)
+            text_end := bar_index+nylpmFirstOffs
+            fill(start_line, stop_line, NYLPMBgColor)
+            verticalLabel(TextColor, text_start, text_end, "NEW YORK\nLUNCH + PM\nMACROS")
+
+        if time == _13_10 or time == _15_15
+            verticalLine(LineColor, bar_index)
+            start_line := verticalLine(LineColor, bar_index)
+            text_start := bar_index
+
+            verticalLine(LineColor, bar_index+nylpmSecondOffs)
+            stop_line := verticalLine(LineColor, bar_index+nylpmSecondOffs)
+            text_end := bar_index+nylpmSecondOffs
+            fill(start_line, stop_line, NYLPMBgColor)
+            verticalLabel(TextColor, text_start, text_end, "NEW YORK\nLUNCH + PM\nMACROS")
+
+//Only today sessions
+if isShowToday==true
+    if isToday==true
+//london
+        if time == _2_33 or time == _4_03
+            verticalLine(LineColor, bar_index)
+            start_line := verticalLine(LineColor, bar_index)
+            text_start := bar_index
+            verticalLine(LineColor, bar_index+londonOffs)
+            stop_line := verticalLine(LineColor, bar_index+londonOffs)
+            text_end := bar_index+londonOffs
+            fill(start_line, stop_line, loBgColor)
+            verticalLabel(TextColor, text_start, text_end, "LONDON MACROS")
+
+//NEW YORK AM
+        if isNYAM == true
+            if time == _8_50 or time == _9_50 or time == _10_50
+                verticalLine(LineColor, bar_index)
+                start_line := verticalLine(LineColor, bar_index)
+                text_start := bar_index
+            
+                verticalLine(LineColor, bar_index+nyamOffs)
+                stop_line := verticalLine(LineColor, bar_index+nyamOffs)
+                text_end := bar_index+nyamOffs
+                fill(start_line, stop_line, NYAMBgColor)
+                verticalLabel(TextColor, text_start, text_end, "NEW YORK\nAM MACROS")
+
+        //NEW YORK LUNCH + PM
+        if isNYLPM == true
+            if time == _11_50
+                verticalLine(LineColor, bar_index)
+                start_line := verticalLine(LineColor, bar_index)
+                text_start := bar_index
+
+                verticalLine(LineColor, bar_index+nylpmFirstOffs)
+                stop_line := verticalLine(LineColor, bar_index+nylpmFirstOffs)
+                text_end := bar_index+nylpmFirstOffs
+                fill(start_line, stop_line, NYLPMBgColor)
+                verticalLabel(TextColor, text_start, text_end, "NEW YORK\nLUNCH + PM\nMACROS")
+
+            if time == _13_10 or time == _15_15
+                verticalLine(LineColor, bar_index)
+                start_line := verticalLine(LineColor, bar_index)
+                text_start := bar_index
+
+                verticalLine(LineColor, bar_index+nylpmSecondOffs)
+                stop_line := verticalLine(LineColor, bar_index+nylpmSecondOffs)
+                text_end := bar_index+nylpmSecondOffs
+                fill(start_line, stop_line, NYLPMBgColor)
+                verticalLabel(TextColor, text_start, text_end, "NEW YORK\nLUNCH + PM\nMACROS")
